@@ -35,7 +35,7 @@ html {
   text-align: center;
   z-index: 1;
   background-color: rgba(0, 48, 90, 0.4);
-  padding: 2rem;
+  /* padding: 2rem; */
   border-radius: 10px;
   backdrop-filter: blur(5px);
   /* margin: 2rem; */

@@ -1,34 +1,36 @@
-body,
-html {
+body, html {
   margin: 0;
   padding: 0;
   height: 100%;
   font-family: Arial, sans-serif;
 }
-.section {
+
+.main-section, .section {
   min-height: 100vh;
-  padding: 20px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+.section {
   align-items: center;
 }
-#Hero-section {
-  background-color: #0077be;
-  color: white;
-}
+
 #Card-Section {
-  background-color: #f0f8ff;
+  /* background-color: #f0f8ff; */
 }
+
 #hall-of-fame-section {
-  background-color: #4682b4;
-  color: white;
+  /* background-color: #4682b4;
+  color: white; */
 }
-/* #faqs-section {
-  background-color: #e6f3ff;
+
+#Footer-section {
+  min-height: auto; /* Allow footer to take its natural height */
+  padding-bottom: 20px; /* Add some padding at the bottom */
 }
-#footer-section {
-  background-color: #00008b;
-  color: white;
-} */
+
+/* Ensure the last section before the footer has some bottom padding */
+.section:nth-last-child(2) {
+  padding-bottom: 50px;
