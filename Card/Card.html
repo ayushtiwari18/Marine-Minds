@@ -8,8 +8,15 @@
   </head>
   <body>
     <div id="discover-section" class="card-section">
-      <video class="background-video" autoplay loop muted playsinline>
-        <source src="/Card/underwater.mp4" type="video/mp4" />
+      <video
+        class="background-video"
+        autoplay
+        loop
+        muted
+        playsinline
+        oncanplay="this.play()"
+      >
+        <source src="/Card/Coral.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
       <h2>Discover Marine Life</h2>
@@ -35,31 +42,58 @@
           </div>
         </div>
         <div class="card">
-          <img
-            src="/Card/portuguese-man-o-war.jpeg"
-            alt="Portuguese Man o' War"
-          />
+          <img src="/Card/barreleye-fish.jpeg" alt="Barreleye Fish" />
           <div class="card-content">
-            <h3 class="card-title">Portuguese Man o' War</h3>
+            <h3 class="card-title">Barreleye Fish</h3>
             <p class="card-description">
-              A colonial organism with a gas-filled float and venomous
-              tentacles.
+              A deep-sea fish with a transparent head and upward-facing eyes.
             </p>
             <a href="#" class="read-more">Read More</a>
           </div>
         </div>
         <div class="card">
-          <img src="/Card/mandarinfish.jpeg" alt="Mandarinfish" />
+          <img src="/Card/barreleye-fish.jpeg" alt="Barreleye Fish" />
           <div class="card-content">
-            <h3 class="card-title">Mandarinfish</h3>
+            <h3 class="card-title">Barreleye Fish</h3>
             <p class="card-description">
-              A small, brightly colored reef fish known for its mating dance.
+              A deep-sea fish with a transparent head and upward-facing eyes.
             </p>
             <a href="#" class="read-more">Read More</a>
           </div>
         </div>
+        <div class="card">
+          <img src="/Card/barreleye-fish.jpeg" alt="Barreleye Fish" />
+          <div class="card-content">
+            <h3 class="card-title">Barreleye Fish</h3>
+            <p class="card-description">
+              A deep-sea fish with a transparent head and upward-facing eyes.
+            </p>
+            <a href="#" class="read-more">Read More</a>
+          </div>
+        </div>
+        <div class="card">
+          <img src="/Card/barreleye-fish.jpeg" alt="Barreleye Fish" />
+          <div class="card-content">
+            <h3 class="card-title">Barreleye Fish</h3>
+            <p class="card-description">
+              A deep-sea fish with a transparent head and upward-facing eyes.
+            </p>
+            <a href="#" class="read-more">Read More</a>
+          </div>
+        </div>
+        <div class="card">
+          <img src="/Card/barreleye-fish.jpeg" alt="Barreleye Fish" />
+          <div class="card-content">
+            <h3 class="card-title">Barreleye Fish</h3>
+            <p class="card-description">
+              A deep-sea fish with a transparent head and upward-facing eyes.
+            </p>
+            <a href="#" class="read-more">Read More</a>
+          </div>
+        </div>
+        <!-- Other cards... -->
       </div>
     </div>
+    <script src="/Card/Card.js"></script>
   </body>
-  <script src="/Card/Card.js"></script>
 </html>

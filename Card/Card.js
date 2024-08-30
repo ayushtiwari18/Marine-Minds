@@ -1,72 +1,62 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const cardContainer = document.querySelector(".card-container");
-  const cardWidth = 320; // card width + gap
-  let scrollPosition = 0;
-  const scrollSpeed = 0.5; // Adjust this value to change scroll speed
+// Function to initialize card scrolling
+function initializeCardScrolling() {
+  const cardSection = document.querySelector("#Card-Section"); // Ensure this ID matches the card section in your HTML
+  const cardContainer = cardSection.querySelector(".card-container"); // Select the card container
+
+  // Check if the elements exist before proceeding
+  if (!cardSection || !cardContainer) {
+    console.error("Required elements are not found in the DOM.");
+    return;
+  }
+
+  const scrollSpeed = 5; // Adjust scroll speed for faster or slower scrolling
   let isAutoScrolling = true;
+  let scrollAnimationFrame;
 
-  // Add navigation buttons
-  const scrollLeftBtn = document.createElement("button");
-  scrollLeftBtn.innerHTML = "&#9664;";
-  scrollLeftBtn.classList.add("scroll-button", "scroll-left");
+  // Clone cards to create a seamless loop
+  const cards = Array.from(cardContainer.children);
+  cards.forEach((card) => {
+    const clone = card.cloneNode(true);
+    cardContainer.appendChild(clone);
+  });
 
-  const scrollRightBtn = document.createElement("button");
-  scrollRightBtn.innerHTML = "&#9654;";
-  scrollRightBtn.classList.add("scroll-button", "scroll-right");
-
-  document.querySelector(".card-section").appendChild(scrollLeftBtn);
-  document.querySelector(".card-section").appendChild(scrollRightBtn);
-
+  // Function to auto-scroll the cards
   function autoScroll() {
     if (!isAutoScrolling) return;
 
-    scrollPosition += scrollSpeed;
-    if (
-      scrollPosition >=
-      cardContainer.scrollWidth - cardContainer.clientWidth
-    ) {
-      scrollPosition = 0;
+    cardContainer.scrollLeft += scrollSpeed;
+
+    // Reset scroll position when reaching the end of the first set of cards
+    if (cardContainer.scrollLeft >= cardContainer.scrollWidth / 2) {
+      cardContainer.scrollLeft = 0;
     }
-    cardContainer.scrollTo(scrollPosition, 0);
-    requestAnimationFrame(autoScroll);
+
+    scrollAnimationFrame = requestAnimationFrame(autoScroll);
   }
 
+  // Function to start auto-scrolling
   function startAutoScroll() {
-    isAutoScrolling = true;
-    autoScroll();
+    if (!isAutoScrolling) {
+      isAutoScrolling = true;
+      autoScroll();
+    }
   }
 
+  // Function to stop auto-scrolling
   function stopAutoScroll() {
     isAutoScrolling = false;
+    cancelAnimationFrame(scrollAnimationFrame);
   }
 
-  cardContainer.addEventListener("mouseover", stopAutoScroll);
-  cardContainer.addEventListener("mouseout", startAutoScroll);
+  // Event listeners for hover functionality
+  cardContainer.addEventListener("mouseenter", stopAutoScroll);
+  cardContainer.addEventListener("mouseleave", startAutoScroll);
 
-  scrollLeftBtn.addEventListener("click", () => {
-    stopAutoScroll();
-    scrollPosition -= cardWidth;
-    if (scrollPosition < 0) scrollPosition = 0;
-    cardContainer.scrollTo({
-      left: scrollPosition,
-      behavior: "smooth",
-    });
-  });
-
-  scrollRightBtn.addEventListener("click", () => {
-    stopAutoScroll();
-    scrollPosition += cardWidth;
-    if (
-      scrollPosition >
-      cardContainer.scrollWidth - cardContainer.clientWidth
-    ) {
-      scrollPosition = cardContainer.scrollWidth - cardContainer.clientWidth;
-    }
-    cardContainer.scrollTo({
-      left: scrollPosition,
-      behavior: "smooth",
-    });
-  });
-
+  // Start auto-scrolling
   startAutoScroll();
+}
+
+// Load sections and initialize specific functionalities once they are loaded
+document.addEventListener("DOMContentLoaded", () => {
+  loadSection("Card-Section", "/Card/Card.html", initializeCardScrolling); // Make sure the ID matches and the correct path to Card.html is set
 });
