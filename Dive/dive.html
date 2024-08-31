@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ocean Literacy Game Menu</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(180deg, #033048, #003366);
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+      .container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        width: 50%;
+        max-width: 1200px;
+      }
+      .icon-container {
+        text-align: center;
+      }
+      .icon {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        border-radius: 20px;
+        margin-bottom: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+      }
+      .icon img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .button {
+        display: inline-block;
+        background-color: #0066cc;
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 20px;
+        text-decoration: none;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+      }
+      .button:hover {
+        background-color: #0055a5;
+      }
+      @media (max-width: 768px) {
+        .container {
+          grid-template-columns: repeat(2, 1fr);
+          width: 70%;
+        }
+      }
+      @media (max-width: 480px) {
+        .container {
+          grid-template-columns: 1fr;
+          width: 90%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="icon-container">
+        <div class="icon">
+          <img src="/Dive/Food Chain.jpg" alt="Food Chain" />
+        </div>
+        <a href="#" class="button">Food Chain</a>
+      </div>
+      <div class="icon-container">
+        <div class="icon">
+          <img src="/Dive/Food Chain.jpg" alt="Coral" />
+        </div>
+        <a href="#" class="button">Coral</a>
+      </div>
+      <div class="icon-container">
+        <div class="icon">
+          <img src="/Dive/Food Chain.jpg" alt="Submarine" />
+        </div>
+        <a href="#" class="button">Submarine</a>
+      </div>
+      <div class="icon-container">
+        <div class="icon">
+          <img src="/Dive/Food Chain.jpg" alt="Food Chain" />
+        </div>
+        <a href="#" class="button">Port</a>
+      </div>
+      <div class="icon-container">
+        <div class="icon">
+          <img src="/Dive/Food Chain.jpg" alt="Food Chain" />
+        </div>
+        <a href="#" class="button">Islands</a>
+      </div>
+      <div class="icon-container">
+        <div class="icon">
+          <img src="/Dive/Food Chain.jpg" alt="Port" />
+        </div>
+        <a href="#" class="button">Ice Berges</a>
+      </div>
+    </div>
+  </body>
+</html>
