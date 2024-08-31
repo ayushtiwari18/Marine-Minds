@@ -4,16 +4,24 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ocean Literacy Game Menu</title>
+    <link rel="stylesheet" href="/Footer/footer.css" />
     <style>
-      body {
+      body,
+      html {
         margin: 0;
         padding: 0;
-        background: linear-gradient(180deg, #033048, #003366);
+        background: rgb(0, 0, 0);
+        background: linear-gradient(
+          23deg,
+          rgba(0, 0, 0, 1) 37%,
+          rgba(0, 129, 222, 1) 73%,
+          rgba(0, 129, 222, 0.975371545102416) 100%
+        );
         font-family: Arial, sans-serif;
+        min-height: 100vh; /* Ensures body is at least full viewport height */
         display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
+        flex-direction: column; /* Makes the footer stay at the bottom */
+        overflow-x: hidden;
       }
       .container {
         display: grid;
@@ -21,6 +29,7 @@
         gap: 20px;
         width: 50%;
         max-width: 1200px;
+        margin: 60px auto;
       }
       .icon-container {
         text-align: center;
@@ -47,9 +56,28 @@
         text-decoration: none;
         font-size: 16px;
         transition: background-color 0.3s ease;
+        cursor: pointer;
       }
       .button:hover {
         background-color: #0055a5;
+      }
+      .flash-message {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background-color: #004080;
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        display: none;
+        z-index: 10;
+      }
+      #footer-section {
+        margin-top: auto; /* Pushes footer to the bottom */
+        width: 100%;
+
+        padding: 1rem;
+        text-align: center;
       }
       @media (max-width: 768px) {
         .container {
@@ -71,38 +99,90 @@
         <div class="icon">
           <img src="/Dive/Food Chain.jpg" alt="Food Chain" />
         </div>
-        <a href="#" class="button">Food Chain</a>
+        <a href="#" class="button" onclick="showFlashMessage('Food Chain')"
+          >Food Chain</a
+        >
       </div>
       <div class="icon-container">
         <div class="icon">
-          <img src="/Dive/Food Chain.jpg" alt="Coral" />
+          <img src="/Dive/pacific.jpg" alt="Coral" />
         </div>
-        <a href="#" class="button">Pacific Ocean</a>
+        <a href="#" class="button" onclick="showFlashMessage('Pacific Ocean')"
+          >Pacific Ocean</a
+        >
       </div>
       <div class="icon-container">
         <div class="icon">
-          <img src="/Dive/Food Chain.jpg" alt="Submarine" />
+          <img src="/Dive/Altantic.jpg" alt="Submarine" />
         </div>
-        <a href="#" class="button">Atlantic Ocean</a>
+        <a href="#" class="button" onclick="showFlashMessage('Atlantic Ocean')"
+          >Atlantic Ocean</a
+        >
       </div>
       <div class="icon-container">
         <div class="icon">
-          <img src="/Dive/Food Chain.jpg" alt="Food Chain" />
+          <img src="/Dive/Indian.jpg" alt="Food Chain" />
         </div>
-        <a href="#" class="button">Indian Ocean</a>
+        <a href="#" class="button" onclick="showFlashMessage('Indian Ocean')"
+          >Indian Ocean</a
+        >
       </div>
       <div class="icon-container">
         <div class="icon">
-          <img src="/Dive/Food Chain.jpg" alt="Food Chain" />
+          <img src="/Dive/Blue Glaucus.webp" alt="Food Chain" />
         </div>
-        <a href="#" class="button">Southern Ocean</a>
+        <a href="#" class="button" onclick="showFlashMessage('Southern Ocean')"
+          >Southern Ocean</a
+        >
       </div>
       <div class="icon-container">
         <div class="icon">
-          <img src="/Dive/Food Chain.jpg" alt="Port" />
+          <img src="/Dive/Articc.jpg" alt="Port" />
         </div>
-        <a href="#" class="button">Arctic Ocean</a>
+        <a href="#" class="button" onclick="showFlashMessage('Arctic Ocean')"
+          >Arctic Ocean</a
+        >
       </div>
     </div>
+
+    <div class="flash-message" id="flash-message"></div>
+
+    <footer id="footer-section"></footer>
+    <script src="/Footer/script.js"></script>
+
+    <script>
+      function showFlashMessage(gameName) {
+        const flashMessage = document.getElementById("flash-message");
+        flashMessage.textContent = `You have selected the ${gameName} game.`;
+        flashMessage.style.display = "block";
+        setTimeout(function () {
+          flashMessage.style.display = "none";
+        }, 3000);
+      }
+
+      function loadSection(sectionId, filePath, callback) {
+        fetch(filePath)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(
+                `Failed to load ${filePath}: ${response.statusText}`
+              );
+            }
+            return response.text();
+          })
+          .then((html) => {
+            document.getElementById(sectionId).innerHTML = html;
+            if (callback) callback(); // Call the callback function after content loads
+          })
+          .catch((error) => {
+            console.error("Error loading section:", error);
+          });
+      }
+
+      // Load sections and initialize specific functionalities once they are loaded
+      document.addEventListener("DOMContentLoaded", () => {
+        loadSection("footer-section", "/Footer/footer.html");
+      });
+    </script>
   </body>
 </html>
