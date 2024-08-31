@@ -154,10 +154,15 @@ nav {
   text-shadow: 0 0 10px rgba(78, 205, 196, 0.7);
 }
 
-/* .nav-item:hover a {
+.nav-items a.nav-item {
+  color: white;
+  text-decoration: none;
+}
+
+.nav-items a.nav-item:hover {
   color: #4ecdc4;
   text-shadow: 0 0 10px rgba(78, 205, 196, 0.7);
-} */
+}
 
 .dropdown {
   display: none;
