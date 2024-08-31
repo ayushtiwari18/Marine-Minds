@@ -16,18 +16,20 @@
   </head>
   <body>
     <div class="container" id="main">
-      <div class="carousel">
-        <div class="carousel-inner">
-          <img src="/Hero Section/1.png" alt="Ocean 1" class="active" />
-          <img src="/Hero Section/2.png" alt="Ocean 2" />
-          <video
-            src="/Hero Section/3.png"
-            autoplay
-            muted
-            loop
-            class="video"
-          ></video>
-        </div>
+      <div class="video-container">
+        <video
+          id="hero-video"
+          poster="/Hero Section/1.png"
+          playsinline
+          muted
+          loop
+          preload="none"
+          class="background-video"
+        >
+          <source src="/Hero Section/hero-section.mp4" type="video/mp4" />
+          <source src="/path/to/optimized-hero-video.webm" type="video/webm" />
+          Your browser does not support the video tag.
+        </video>
       </div>
       <nav>
         <div class="logo">
@@ -45,7 +47,7 @@
             Dive
             <div class="dropdown">
               <a href="#">Food Chain</a>
-              <a href="#">Subamrine</a>
+              <a href="#">Submarine</a>
             </div>
           </div>
 
@@ -76,14 +78,13 @@
         </div>
         <button class="signin-button">Sign In</button>
       </nav>
-      <div class="underwater-elements" id="underwater"></div>
       <div class="hero">
         <h1>Ocean Adventure</h1>
         <p>Dive into a world of underwater mysteries</p>
         <div class="play-button"></div>
       </div>
     </div>
-    <div class="underwater-elements">
+    <div class="underwater-elements" id="underwater">
       <!-- Bubbles -->
       <div
         class="bubble"

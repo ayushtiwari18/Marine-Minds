@@ -50,15 +50,36 @@ for (let i = 0; i < 5; i++) {
   seaweed.style.transform = `scale(${Math.random() * 0.5 + 0.5})`;
   underwaterContainer.appendChild(seaweed);
 }
+document.addEventListener("DOMContentLoaded", function () {
+  const video = document.getElementById("hero-video");
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-// Carousel functionality
-const carouselImages = document.querySelectorAll(".carousel-inner img ");
-let currentImageIndex = 0;
+  function loadVideo() {
+    if (isMobile) {
+      video.style.display = "none";
+      document.querySelector(".video-container").style.backgroundImage =
+        "url('/path/to/mobile-hero-image.jpg')";
+    } else {
+      video.load();
+      video.play().catch((error) => {
+        console.error("Auto-play was prevented:", error);
+      });
+    }
+  }
 
-function nextImage() {
-  carouselImages[currentImageIndex].classList.remove("active");
-  currentImageIndex = (currentImageIndex + 1) % carouselImages.length;
-  carouselImages[currentImageIndex].classList.add("active");
-}
-
-setInterval(nextImage, 1000); // Change image every 5 seconds
+  // Lazy load the video
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          loadVideo();
+          observer.unobserve(entry.target);
+        }
+      });
+    });
+    observer.observe(video);
+  } else {
+    // Fallback for browsers that don't support IntersectionObserver
+    loadVideo();
+  }
+});
