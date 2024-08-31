@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About Us - Marine Minds</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Norican&family=Rubik:wght@300..900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        font-family: "Rubik", sans-serif;
+        /* background-color: #021f3a; */
+        color: #ffffff;
+        overflow-x: hidden;
+      }
+
+      .background-video-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: -1;
+      }
+
+      #background-video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .hero {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .logo {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        margin-bottom: 10rem;
+      }
+
+      .title {
+        font-family: "Norican", cursive;
+        font-size: 4rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      }
+
+      .content {
+        max-width: 800px;
+        margin: 4rem auto;
+        padding: 2rem;
+        background-color: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .team-section {
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        padding: 4rem 0;
+      }
+
+      .team-title {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .team-members {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 2rem;
+      }
+
+      .team-member {
+        width: 250px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+      }
+
+      .team-member:hover {
+        transform: translateY(-10px);
+      }
+
+      .team-member img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+      }
+
+      .team-member-info {
+        padding: 1rem;
+        text-align: center;
+      }
+
+      .team-member-name {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+      }
+
+      .team-member-role {
+        font-size: 0.9rem;
+        color: #a0a0a0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="background-video-container">
+      <video autoplay muted loop id="background-video">
+        <source src="/About/moon.mp4" type="video/mp4" />
+        Your browser does not support HTML5 video.
+      </video>
+    </div>
+
+    <div class="container">
+      <section class="hero">
+        <img
+          src="/Footer/Marine Minds Logo.png"
+          alt="Marine Minds Logo"
+          class="logo"
+        />
+        <h1 class="title">Marine Minds</h1>
+      </section>
+
+      <section class="content">
+        <p>
+          Dive into a world of wonder with Ocean Adventure! We're a crew of
+          marine explorers and digital dreamers, passionate about bringing the
+          mysteries of the deep to your fingertips. Picture yourself swimming
+          alongside playful dolphins, exploring ancient shipwrecks, and
+          encountering mythical creatures. Our game isn't just about fun; it's a
+          virtual voyage of discovery, teaching you about the ocean's delicate
+          ecosystems and inspiring you to become a champion for its
+          conservation. Buckle up, grab your snorkel, and get ready for an
+          unforgettable underwater adventure!
+        </p>
+      </section>
+
+      <section class="team-section">
+        <h2 class="team-title">Our Team Members</h2>
+        <div class="team-members">
+          <div class="team-member">
+            <img src="/About/archi.jpg" alt="Archi Jain" />
+            <div class="team-member-info">
+              <div class="team-member-name">Archi Jain</div>
+              <div class="team-member-role">
+                Project Leader & Marine Biologist
+              </div>
+            </div>
+          </div>
+          <div class="team-member">
+            <img src="team-member2.jpg" alt="Anushka Bhatt" />
+            <div class="team-member-info">
+              <div class="team-member-name">Anushka Bhatt</div>
+              <div class="team-member-role">Game Designer</div>
+            </div>
+          </div>
+          <div class="team-member">
+            <img src="team-member3.jpg" alt="Yogita Tiwari" />
+            <div class="team-member-info">
+              <div class="team-member-name">Yogita Tiwari</div>
+              <div class="team-member-role">3D Artist</div>
+            </div>
+          </div>
+          <div class="team-member">
+            <img src="/About/ayush75.png" alt="Ayush Tiwari" />
+            <div class="team-member-info">
+              <div class="team-member-name">Ayush Tiwari</div>
+              <div class="team-member-role">Developer</div>
+            </div>
+          </div>
+          <div class="team-member">
+            <img src="team-member5.jpg" alt="Ayush Tiwari" />
+            <div class="team-member-info">
+              <div class="team-member-name">Ayush Tiwari</div>
+              <div class="team-member-role">Sound Designer</div>
+            </div>
+          </div>
+          <div class="team-member">
+            <img src="team-member6.jpg" alt="Krishna Sharma" />
+            <div class="team-member-info">
+              <div class="team-member-name">Krishna Sharma</div>
+              <div class="team-member-role">Environmental Scientist</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </body>
+</html>

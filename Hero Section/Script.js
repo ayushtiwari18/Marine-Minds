@@ -52,7 +52,7 @@ for (let i = 0; i < 5; i++) {
 }
 
 // Carousel functionality
-const carouselImages = document.querySelectorAll(".carousel-inner img");
+const carouselImages = document.querySelectorAll(".carousel-inner img ");
 let currentImageIndex = 0;
 
 function nextImage() {
@@ -61,4 +61,4 @@ function nextImage() {
   carouselImages[currentImageIndex].classList.add("active");
 }
 
-setInterval(nextImage, 5000); // Change image every 5 seconds
+setInterval(nextImage, 1000); // Change image every 5 seconds
