@@ -5,11 +5,7 @@ body {
   padding: 0;
   min-height: 100vh;
   color: white;
-  background: linear-gradient(
-    23deg,
-    rgba(0, 20, 60, 1) 0%,
-    rgba(0, 60, 120, 1) 100%
-  );
+  background: linear-gradient(23deg, rgba(0, 20, 60, 1) 0%, #003c78 100%);
 }
 
 .hall-of-fame {
