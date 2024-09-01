@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Deep Sea Diver Adventure</title>
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        font-family: Arial, sans-serif;
+      }
+      canvas {
+        display: block;
+      }
+      #diveButton {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 15px 30px;
+        font-size: 24px;
+        cursor: pointer;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        transition: background-color 0.9s;
+      }
+      #diveButton:hover {
+        background-color: #45a049;
+      }
+      #gameOverText {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 72px;
+        color: red;
+        display: none;
+      }
+      #hud {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        color: white;
+        font-size: 18px;
+      }
+      #locationSelect {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="gameCanvas"></canvas>
+    <button id="diveButton">Dive</button>
+    <div id="gameOverText">YOU DIED</div>
+
+    <div id="hud">
+      <div>Depth: <span id="depthMeter">0</span> m</div>
+      <div>Oxygen: <span id="oxygenMeter">100</span>%</div>
+      <div>Score: <span id="scoreMeter">0</span></div>
+    </div>
+    <select id="locationSelect">
+      <option value="dwarka">Dwarka</option>
+      <option value="nemoPoint">Nemo Point</option>
+      <option value="bermudaTriangle">Bermuda Triangle</option>
+      <option value="titanic">Titanic</option>
+      <option value="maryCeleste">Mary Celeste</option>
+      <option value="atlantis">Atlantis</option>
+      <option value="mh370">MH370</option>
+    </select>
+    <script>
+      const canvas = document.getElementById("gameCanvas");
+      const ctx = canvas.getContext("2d");
+      const diveButton = document.getElementById("diveButton");
+      const gameOverText = document.getElementById("gameOverText");
+      const depthMeter = document.getElementById("depthMeter");
+      const oxygenMeter = document.getElementById("oxygenMeter");
+      const scoreMeter = document.getElementById("scoreMeter");
+
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const ocean = {
+        waveOffset: 0,
+        waveSpeed: 0.02,
+        depth: 5000,
+        surfaceLevel: canvas.height * 0.3,
+      };
+
+      const camera = {
+        y: 0,
+      };
+
+      const ship = {
+        x: canvas.width * 0.5,
+        y: ocean.surfaceLevel - canvas.height * 0.25,
+        width: canvas.width * 0.3,
+        height: canvas.height * 0.25,
+        image: new Image(),
+      };
+
+      const diver = {
+        x: canvas.width * 0.5,
+        y: ocean.surfaceLevel,
+        width: 60,
+        height: 120,
+        speed: 3,
+        isUnderwater: false,
+        oxygen: 100,
+        score: 0,
+        image: new Image(),
+        visible: false,
+      };
+
+      ship.image.src = "DALL.png";
+      diver.image.src = "diver1.png";
+
+      const fishTypes = [
+        { name: "fish4", y: ocean.depth * 0.2, count: 10, speed: 1.5 },
+        { name: "fish2", y: ocean.depth * 0.4, count: 10, speed: 2 },
+        { name: "fish3", y: ocean.depth * 0.6, count: 10, speed: 2.5 },
+        { name: "fish1", y: ocean.depth * 0.8, count: 10, speed: 3 },
+      ];
+
+      const fishGroups = [];
+      const sharks = [];
+      const treasures = [];
+      const coralReefs = [];
+      const jellyfish = [];
+
+      function createFishGroup(type) {
+        const group = {
+          fish: [],
+        };
+
+        for (let i = 0; i < type.count; i++) {
+          const fish = new Image();
+          fish.src = `${type.name}.png`;
+          group.fish.push({
+            image: fish,
+            x: Math.random() * canvas.width,
+            y: type.y + Math.random() * 200 - 100,
+            speed: type.speed,
+            direction: Math.random() < 0.5 ? -1 : 1,
+            width: 75,
+            height: 45,
+            angle: 0,
+          });
+        }
+
+        return group;
+      }
+
+      function createShark() {
+        const shark = {
+          x: Math.random() * canvas.width,
+          y: ocean.depth * 0.5 + Math.random() * 200 - 100,
+          speed: 2,
+          direction: Math.random() < 0.5 ? -1 : 1,
+          width: 200,
+          height: 100,
+          image: new Image(),
+        };
+        shark.image.src = "shark.png";
+        return shark;
+      }
+
+      function createCoralReef() {
+        const coral = {
+          x: Math.random() < 0.5 ? 0 : canvas.width - 100,
+          y: ocean.depth * 0.9,
+          width: 100,
+          height: 200,
+          image: new Image(),
+        };
+        coral.image.src = "corals.jpg";
+        return coral;
+      }
+
+      function createJellyfish() {
+        const jelly = {
+          x: Math.random() * canvas.width,
+          y: ocean.depth,
+          speed: Math.random() * 0.5 + 0.2,
+          width: 70,
+          height: 140,
+          image: new Image(),
+        };
+        jelly.image.src = "jely.png";
+        return jelly;
+      }
+
+      function createTreasure() {
+        const treasure = {
+          x: Math.random() * canvas.width,
+          y: ocean.depth * (0.5 + Math.random() * 0.5),
+          width: 50,
+          height: 50,
+          image: new Image(),
+        };
+        treasure.image.src = "treasure.png";
+        return treasure;
+      }
+
+      fishTypes.forEach((type) => {
+        fishGroups.push(createFishGroup(type));
+      });
+
+      for (let i = 0; i < 3; i++) {
+        sharks.push(createShark());
+      }
+
+      for (let i = 0; i < 5; i++) {
+        treasures.push(createTreasure());
+      }
+
+      for (let i = 0; i < 5; i++) {
+        coralReefs.push(createCoralReef());
+        jellyfish.push(createJellyfish());
+      }
+
+      let imagesLoaded = 0;
+      const totalImages =
+        2 +
+        fishGroups.reduce((sum, group) => sum + group.fish.length, 0) +
+        sharks.length +
+        coralReefs.length +
+        jellyfish.length;
+
+      function imageLoaded() {
+        imagesLoaded++;
+        if (imagesLoaded === totalImages) {
+          animate();
+        }
+      }
+
+      ship.image.onload = imageLoaded;
+      diver.image.onload = imageLoaded;
+      fishGroups.forEach((group) =>
+        group.fish.forEach((fish) => (fish.image.onload = imageLoaded))
+      );
+      sharks.forEach((shark) => (shark.image.onload = imageLoaded));
+      coralReefs.forEach((coral) => (coral.image.onload = imageLoaded));
+      jellyfish.forEach((jelly) => (jelly.image.onload = imageLoaded));
+
+      const clouds = [];
+      const bubbles = [];
+      const raindrops = [];
+
+      for (let i = 0; i < 5; i++) {
+        clouds.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * ocean.surfaceLevel * 0.5,
+          radius: Math.random() * 30 + 20,
+        });
+      }
+
+      function createBubble() {
+        bubbles.push({
+          x: Math.random() * canvas.width,
+          y: camera.y + canvas.height,
+          radius: Math.random() * 5 + 2,
+          speed: Math.random() * 2 + 1,
+        });
+      }
+
+      function createRaindrop() {
+        raindrops.push({
+          x: Math.random() * canvas.width,
+          y: 0,
+          speed: Math.random() * 5 + 5,
+          length: Math.random() * 10 + 5,
+        });
+      }
+
+      let currentLocation = "dwarka";
+
+      function drawBackground() {
+        let gradient;
+        switch (currentLocation) {
+          case "nemoPoint":
+            gradient = ctx.createLinearGradient(0, 0, 0, ocean.surfaceLevel);
+            gradient.addColorStop(0, "#2F4F4F");
+            gradient.addColorStop(1, "#1C1C1C");
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, ocean.surfaceLevel);
+            break;
+          case "bermudaTriangle":
+            gradient = ctx.createLinearGradient(0, 0, 0, ocean.surfaceLevel);
+            gradient.addColorStop(0, "#1C1C1C");
+            gradient.addColorStop(1, "#2F4F4F");
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, ocean.surfaceLevel);
+            break;
+          case "titanic":
+            ctx.fillStyle = "#87CEEB";
+            ctx.fillRect(0, 0, canvas.width, ocean.surfaceLevel);
+            break;
+          case "mh370":
+            gradient = ctx.createLinearGradient(0, 0, 0, ocean.surfaceLevel);
+            gradient.addColorStop(0, "#87CEEB");
+            gradient.addColorStop(1, "#4682B4");
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, ocean.surfaceLevel);
+            ctx.fillStyle = "#FFD700";
+            ctx.beginPath();
+            ctx.arc(100, 100, 50, 0, Math.PI * 2);
+            ctx.fill();
+            break;
+          default:
+            gradient = ctx.createLinearGradient(0, 0, 0, ocean.surfaceLevel);
+            gradient.addColorStop(0, "#87CEEB");
+            gradient.addColorStop(1, "#4682B4");
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, ocean.surfaceLevel);
+        }
+
+        ctx.fillStyle = "white";
+        clouds.forEach((cloud) => {
+          ctx.beginPath();
+          ctx.arc(cloud.x, cloud.y, cloud.radius, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.arc(
+            cloud.x - 20,
+            cloud.y + 10,
+            cloud.radius * 0.8,
+            0,
+            Math.PI * 2
+          );
+          ctx.fill();
+          ctx.arc(
+            cloud.x + 20,
+            cloud.y + 10,
+            cloud.radius * 0.9,
+            0,
+            Math.PI * 2
+          );
+          ctx.fill();
+        });
+
+        if (currentLocation === "bermudaTriangle") {
+          ctx.fillStyle = "rgba(200, 200, 200, 0.5)";
+          raindrops.forEach((drop, index) => {
+            ctx.fillRect(drop.x, drop.y, 1, drop.length);
+            drop.y += drop.speed;
+            if (drop.y > canvas.height) {
+              raindrops.splice(index, 1);
+            }
+          });
+          if (Math.random() < 0.3) createRaindrop();
+        }
+      }
+
+      function drawOcean() {
+        let gradient = ctx.createLinearGradient(
+          0,
+          ocean.surfaceLevel - camera.y,
+          0,
+          canvas.height - camera.y
+        );
+        gradient.addColorStop(0, "#4682B4");
+        gradient.addColorStop(1, "#000080");
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.moveTo(0, ocean.surfaceLevel - camera.y);
+
+        const waveAmplitude =
+          currentLocation === "maryCeleste" || currentLocation === "atlantis"
+            ? 20
+            : 10;
+        for (let x = 0; x < canvas.width; x++) {
+          ctx.lineTo(
+            x,
+            Math.sin(x * 0.02 + ocean.waveOffset) * waveAmplitude +
+              ocean.surfaceLevel -
+              camera.y
+          );
+        }
+
+        ctx.lineTo(canvas.width, canvas.height);
+        ctx.lineTo(0, canvas.height);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.fillStyle = "#8B4513";
+        ctx.fillRect(0, ocean.depth - camera.y, canvas.width, 100);
+      }
+
+      function drawFishGroups() {
+        fishGroups.forEach((group) => {
+          group.fish.forEach((fish) => {
+            ctx.save();
+            ctx.translate(
+              fish.x + fish.width / 2,
+              fish.y - camera.y + fish.height / 2
+            );
+            ctx.rotate(fish.angle);
+            ctx.drawImage(
+              fish.image,
+              -fish.width / 2,
+              -fish.height / 2,
+              fish.width,
+              fish.height
+            );
+            ctx.restore();
+
+            fish.x += fish.speed * fish.direction;
+            fish.y += Math.sin(Date.now() * 0.003) * 0.5;
+            fish.angle = Math.sin(Date.now() * 0.005) * 0.1;
+
+            if (fish.x > canvas.width + fish.width) fish.x = -fish.width;
+            if (fish.x < -fish.width) fish.x = canvas.width + fish.width;
+          });
+        });
+      }
+
+      function drawOceanFloor() {
+        const floorHeight = 500;
+        const plantCount = 20;
+
+        ctx.fillStyle = "#3a2f0b";
+        ctx.fillRect(0, ocean.depth - camera.y, canvas.width, floorHeight);
+
+        for (let i = 0; i < plantCount; i++) {
+          const x = (canvas.width / plantCount) * i;
+          const height = Math.random() * 50 + 50;
+          const width = 20;
+
+          ctx.fillStyle = "#0f5e1b";
+          ctx.beginPath();
+          ctx.moveTo(x, ocean.depth - camera.y);
+          ctx.lineTo(x + width / 2, ocean.depth - height - camera.y);
+          ctx.lineTo(x + width, ocean.depth - camera.y);
+          ctx.closePath();
+          ctx.fill();
+        }
+      }
+
+      function drawSharks() {
+        sharks.forEach((shark) => {
+          ctx.save();
+          ctx.translate(
+            shark.x + shark.width / 2,
+            shark.y - camera.y + shark.height / 2
+          );
+          if (shark.direction > 0) {
+            ctx.scale(-1, 1);
+          }
+          ctx.drawImage(
+            shark.image,
+            -shark.width / 2,
+            -shark.height / 2,
+            shark.width,
+            shark.height
+          );
+          ctx.restore();
+
+          shark.x += shark.speed * shark.direction;
+          shark.y += Math.sin(Date.now() * 0.002) * 0.7;
+
+          if (shark.x > canvas.width + shark.width) {
+            shark.x = -shark.width;
+            shark.direction = 1;
+          }
+          if (shark.x < -shark.width) {
+            shark.x = canvas.width + shark.width;
+            shark.direction = -1;
+          }
+        });
+      }
+
+      function drawCoralReefs() {
+        coralReefs.forEach((coral) => {
+          ctx.drawImage(
+            coral.image,
+            coral.x,
+            coral.y - camera.y,
+            coral.width,
+            coral.height
+          );
+        });
+      }
+
+      function drawJellyfish() {
+        jellyfish.forEach((jelly) => {
+          ctx.drawImage(
+            jelly.image,
+            jelly.x,
+            jelly.y - camera.y,
+            jelly.width,
+            jelly.height
+          );
+          jelly.y -= jelly.speed;
+          jelly.x += Math.sin(Date.now() * 0.001) * 0.5;
+          if (jelly.y < camera.y - jelly.height) {
+            jelly.y = ocean.depth;
+            jelly.x = Math.random() * canvas.width;
+          }
+        });
+      }
+
+      function drawTreasures() {
+        treasures.forEach((treasure) => {
+          ctx.drawImage(
+            treasure.image,
+            treasure.x,
+            treasure.y - camera.y,
+            treasure.width,
+            treasure.height
+          );
+        });
+      }
+
+      function drawDiver() {
+        if (diver.visible) {
+          ctx.drawImage(
+            diver.image,
+            diver.x - diver.width / 2,
+            diver.y - camera.y - diver.height / 2,
+            diver.width,
+            diver.height
+          );
+        }
+      }
+
+      function checkCollisions() {
+        sharks.forEach((shark) => {
+          if (
+            diver.x < shark.x + shark.width &&
+            diver.x + diver.width > shark.x &&
+            diver.y < shark.y + shark.height &&
+            diver.y + diver.height > shark.y
+          ) {
+            gameOver();
+          }
+        });
+
+        treasures.forEach((treasure, index) => {
+          if (
+            diver.x < treasure.x + treasure.width &&
+            diver.x + diver.width > treasure.x &&
+            diver.y < treasure.y + treasure.height &&
+            diver.y + diver.height > treasure.y
+          ) {
+            diver.score += 100;
+            treasures.splice(index, 1);
+            if (Math.random() < 0.5) {
+              treasures.push(createTreasure());
+            }
+          }
+        });
+      }
+
+      function updateOxygen() {
+        if (diver.isUnderwater) {
+          diver.oxygen -= 0.002;
+          if (diver.oxygen <= 0) {
+            gameOver();
+          }
+        } else if (diver.y <= ocean.surfaceLevel) {
+          diver.oxygen = Math.min(100, diver.oxygen + 0.1);
+        }
+        oxygenMeter.textContent = Math.round(diver.oxygen);
+      }
+
+      function updateDepth() {
+        const depth = Math.max(
+          0,
+          Math.round((diver.y - ocean.surfaceLevel) / 10)
+        );
+        depthMeter.textContent = depth;
+      }
+
+      function updateScore() {
+        scoreMeter.textContent = diver.score;
+      }
+
+      function gameOver() {
+        gameOverText.style.display = "block";
+        diver.isUnderwater = false;
+        diver.visible = false;
+
+        // Wait for 2 seconds before restarting
+        setTimeout(restartGame, 5000);
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        drawBackground();
+        drawOcean();
+        drawFishGroups();
+        drawSharks();
+        drawTreasures();
+        drawDiver();
+        drawOceanFloor();
+        drawCoralReefs();
+        drawJellyfish();
+        drawParallaxObjects();
+
+        ctx.drawImage(
+          ship.image,
+          ship.x - ship.width / 2,
+          ship.y - camera.y,
+          ship.width,
+          ship.height
+        );
+
+        ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+        bubbles.forEach((bubble, index) => {
+          ctx.beginPath();
+          ctx.arc(bubble.x, bubble.y - camera.y, bubble.radius, 0, Math.PI * 2);
+          ctx.fill();
+          bubble.y -= bubble.speed;
+          if (bubble.y + bubble.radius < camera.y) {
+            bubbles.splice(index, 1);
+          }
+        });
+
+        // if (diver.visible) {
+        //   ctx.drawImage(
+        //     diver.image,
+        //     diver.x,
+        //     diver.y - camera.y,
+        //     diver.width,
+        //     diver.height
+        //   );
+        //   checkCollisions();
+        // }
+
+        ocean.waveOffset += ocean.waveSpeed;
+
+        if (Math.random() < 0.1) {
+          createBubble();
+        }
+
+        if (diver.isUnderwater) {
+          camera.y = Math.max(0, diver.y - canvas.height * 0.5);
+          if (diver.y > ocean.depth - canvas.height * 0.3) {
+            parallaxOffset += 1;
+          }
+          checkCollisions();
+          updateOxygen();
+          updateDepth();
+          updateScore();
+        }
+
+        requestAnimationFrame(animate);
+      }
+
+      // New function to restart the game
+      function restartGame() {
+        diver.x = canvas.width * 0.5;
+        diver.y = ocean.surfaceLevel;
+        diver.oxygen = 100;
+        diver.score = 0;
+        diver.isUnderwater = false;
+        diver.visible = false;
+        camera.y = 0;
+        gameOverText.style.display = "none";
+        diveButton.style.display = "block";
+
+        // Reset treasures
+        treasures.length = 0;
+        for (let i = 0; i < 5; i++) {
+          treasures.push(createTreasure());
+        }
+
+        // Reset sharks
+        sharks.forEach((shark) => {
+          shark.x = Math.random() * canvas.width;
+          shark.y = ocean.depth * 0.5 + Math.random() * 200 - 100;
+          shark.direction = Math.random() < 0.5 ? -1 : 1;
+        });
+
+        // Reset jellyfish
+        jellyfish.forEach((jelly) => {
+          jelly.y = ocean.depth;
+          jelly.x = Math.random() * canvas.width;
+        });
+      }
+
+      const parallaxLayers = [
+        { speed: 0.2, objects: [] },
+        { speed: 0.5, objects: [] },
+        { speed: 0.8, objects: [] },
+      ];
+
+      let parallaxOffset = 0;
+
+      function createParallaxObjects() {
+        // Seaweed
+        for (let i = 0; i < 20; i++) {
+          parallaxLayers[0].objects.push({
+            x: Math.random() * canvas.width * 3,
+            y: ocean.depth - Math.random() * 200,
+            width: 20,
+            height: 100 + Math.random() * 100,
+            color: "#0a5f38",
+          });
+        }
+
+        // Rocks
+        for (let i = 0; i < 15; i++) {
+          parallaxLayers[1].objects.push({
+            x: Math.random() * canvas.width * 3,
+            y: ocean.depth - 50 - Math.random() * 100,
+            width: 50 + Math.random() * 100,
+            height: 50 + Math.random() * 100,
+            color: "#555",
+          });
+        }
+
+        // Sunken ship (Titanic-like)
+        parallaxLayers[2].objects.push({
+          x: canvas.width,
+          y: ocean.depth - 300,
+          width: 600,
+          height: 200,
+          color: "#8B4513",
+          type: "ship",
+        });
+      }
+
+      function drawParallaxObjects() {
+        parallaxLayers.forEach((layer) => {
+          layer.objects.forEach((obj) => {
+            let adjustedX =
+              (obj.x - parallaxOffset * layer.speed) % (canvas.width * 3);
+            if (adjustedX > canvas.width) return;
+
+            ctx.fillStyle = obj.color;
+
+            if (obj.type === "ship") {
+              // Draw ship hull
+              ctx.fillRect(adjustedX, obj.y - camera.y, obj.width, obj.height);
+
+              // Draw ship deck
+              ctx.fillStyle = "#A0522D";
+              ctx.fillRect(
+                adjustedX + 50,
+                obj.y - 50 - camera.y,
+                obj.width - 100,
+                50
+              );
+
+              // Draw ship funnels
+              ctx.fillStyle = "#8B0000";
+              for (let i = 0; i < 3; i++) {
+                ctx.fillRect(
+                  adjustedX + 150 + i * 150,
+                  obj.y - 100 - camera.y,
+                  50,
+                  100
+                );
+              }
+            } else {
+              ctx.fillRect(adjustedX, obj.y - camera.y, obj.width, obj.height);
+            }
+          });
+        });
+      }
+
+      // Event listener for the dive button
+      diveButton.addEventListener("click", () => {
+        if (!diver.isUnderwater) {
+          diver.isUnderwater = true;
+          diver.visible = true;
+          diver.y = ocean.surfaceLevel + 100;
+          diver.oxygen = 100;
+          diver.score = 0;
+          diveButton.style.display = "none";
+          gameOverText.style.display = "none";
+        }
+      });
+
+      locationSelect.addEventListener("change", (e) => {
+        currentLocation = e.target.value;
+      });
+
+      // Event listener for keyboard controls
+      document.addEventListener("keydown", (e) => {
+        if (diver.isUnderwater) {
+          switch (e.key) {
+            case "ArrowLeft":
+              diver.x -= diver.speed;
+              break;
+            case "ArrowRight":
+              diver.x += diver.speed;
+              break;
+            case "ArrowUp":
+              diver.y -= diver.speed;
+              break;
+            case "ArrowDown":
+              diver.y += diver.speed;
+              break;
+          }
+          diver.y = Math.min(
+            Math.max(ocean.surfaceLevel, diver.y),
+            ocean.depth - diver.height
+          );
+          diver.x = Math.max(0, Math.min(canvas.width - diver.width, diver.x));
+        }
+      });
+
+      window.addEventListener("wheel", (e) => {
+        if (diver.isUnderwater) {
+          diver.y = Math.min(
+            Math.max(ocean.surfaceLevel, diver.y + e.deltaY * 0.5),
+            ocean.depth - diver.height
+          );
+        }
+      });
+
+      // Event listener for window resize
+      window.addEventListener("resize", () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        ocean.surfaceLevel = canvas.height * 0.3;
+        ship.x = canvas.width * 0.5;
+        ship.y = ocean.surfaceLevel - canvas.height * 0.25;
+        ship.width = canvas.width * 0.3;
+        ship.height = canvas.height * 0.25;
+        if (!diver.isUnderwater) {
+          diver.x = canvas.width * 0.5;
+          diver.y = ocean.surfaceLevel;
+        }
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "r" || e.key === "R") {
+          if (!diver.isUnderwater && gameOverText.style.display === "block") {
+            restartGame();
+          }
+        }
+      });
+
+      // Start the animation loop
+      createParallaxObjects();
+      animate();
+    </script>
+  </body>
+</html>
