@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ocean Literacy Game Menu</title>
+    <link rel="stylesheet" href="/Footer/footer.css" />
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        background: rgb(0, 0, 0);
+        background: linear-gradient(
+          23deg,
+          rgba(0, 0, 0, 1) 37%,
+          rgba(0, 129, 222, 1) 73%,
+          rgba(0, 129, 222, 0.975371545102416) 100%
+        );
+        font-family: Arial, sans-serif;
+        min-height: 100vh; /* Ensures body is at least full viewport height */
+        display: flex;
+        flex-direction: column; /* Makes the footer stay at the bottom */
+        overflow-x: hidden;
+      }
+      .container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        width: 50%;
+        max-width: 1200px;
+        margin: 60px auto;
+      }
+      .icon-container {
+        text-align: center;
+      }
+      .icon {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        border-radius: 20px;
+        margin-bottom: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+      }
+      .icon img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .button {
+        display: inline-block;
+        background-color: #0066cc;
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 20px;
+        text-decoration: none;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+        cursor: pointer;
+      }
+      .button:hover {
+        background-color: #0055a5;
+      }
+      .flash-message {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background-color: #004080;
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        display: none;
+        z-index: 10;
+      }
+      #footer-section {
+        margin-top: auto; /* Pushes footer to the bottom */
+        width: 100%;
+
+        padding: 1rem;
+        text-align: center;
+      }
+      @media (max-width: 768px) {
+        .container {
+          grid-template-columns: repeat(2, 1fr);
+          width: 70%;
+        }
+      }
+      @media (max-width: 480px) {
+        .container {
+          grid-template-columns: 1fr;
+          width: 90%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="icon-container">
+        <div class="icon">
+          <img src="/Game UI/Marine Bio.png" alt="Food Chain" />
+        </div>
+        <a
+          href="#"
+          class="button"
+          onclick="showFlashMessage('Marine Biologist')"
+          >Marine Biologist</a
+        >
+      </div>
+      <div class="icon-container">
+        <div class="icon">
+          <img src="/Game UI/Marine Fighters.png" alt="Coral" />
+        </div>
+        <a
+          href="#"
+          class="button"
+          onclick="showFlashMessage('Fisherman Survival')"
+          >Fisherman Survival</a
+        >
+      </div>
+      <div class="icon-container">
+        <div class="icon">
+          <img src="/Game UI/6.png" alt="Submarine" />
+        </div>
+        <a
+          href="#"
+          class="button"
+          onclick="showFlashMessage('Coral Crocusader')"
+          >Coral Crocusader</a
+        >
+      </div>
+      <div class="icon-container">
+        <div class="icon">
+          <img src="/Game UI/Sea Food.png" alt="Food Chain" />
+        </div>
+        <a href="#" class="button" onclick="showFlashMessage('SeaFood')"
+          >SeaFood</a
+        >
+      </div>
+      <div class="icon-container">
+        <div class="icon">
+          <img src="/Game UI/5.png" alt="Food Chain" />
+        </div>
+        <a href="#" class="button" onclick="showFlashMessage('Ocenic View')"
+          >Ocenic View</a
+        >
+      </div>
+      <div class="icon-container">
+        <div class="icon">
+          <img src="/Game UI/4.png" alt="Port" />
+        </div>
+        <a
+          href="#"
+          class="button"
+          onclick="showFlashMessage('Resoucre Allocation')"
+          >Resoucre Allocation</a
+        >
+      </div>
+    </div>
+
+    <div class="flash-message" id="flash-message"></div>
+
+    <footer id="footer-section"></footer>
+    <script src="/Footer/script.js"></script>
+
+    <script>
+      function showFlashMessage(gameName) {
+        const flashMessage = document.getElementById("flash-message");
+        flashMessage.textContent = `You have selected the ${gameName} game.`;
+        flashMessage.style.display = "block";
+        setTimeout(function () {
+          flashMessage.style.display = "none";
+        }, 3000);
+      }
+
+      function loadSection(sectionId, filePath, callback) {
+        fetch(filePath)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(
+                `Failed to load ${filePath}: ${response.statusText}`
+              );
+            }
+            return response.text();
+          })
+          .then((html) => {
+            document.getElementById(sectionId).innerHTML = html;
+            if (callback) callback(); // Call the callback function after content loads
+          })
+          .catch((error) => {
+            console.error("Error loading section:", error);
+          });
+      }
+
+      // Load sections and initialize specific functionalities once they are loaded
+      document.addEventListener("DOMContentLoaded", () => {
+        loadSection("footer-section", "/Footer/footer.html");
+      });
+    </script>
+    <script
+      chatbot_id="66d456c6706e8026b8060c40"
+      src="https://app.thinkstack.ai/bot/thinkstackai-loader.min.js"
+    ></script>
+  </body>
+</html>

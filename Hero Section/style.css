@@ -69,6 +69,7 @@ p {
 }
 
 .play-button::after {
+  color: white;
   content: "▶";
   font-size: 2rem;
 }
